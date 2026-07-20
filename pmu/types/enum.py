@@ -1,0 +1,27 @@
+from enum import Enum
+
+
+class BetType(str, Enum):
+    """Types de paris supportés par l'API PMU pour les endpoints rapports.
+
+    Utiliser la valeur de l'enum dans les URLs, par ex. ``BetType.E_SIMPLE_GAGNANT``.
+    """
+
+    E_SIMPLE_PLACE = "E_SIMPLE_PLACE"
+    E_SIMPLE_GAGNANT = "E_SIMPLE_GAGNANT"
+    SIMPLE_PLACE_INTERNATIONAL = "SIMPLE_PLACE_INTERNATIONAL"
+    SIMPLE_GAGNANT_INTERNATIONAL = "SIMPLE_GAGNANT_INTERNATIONAL"
+    E_COUPLE_PLACE = "E_COUPLE_PLACE"
+    E_COUPLE_GAGNANT = "E_COUPLE_GAGNANT"
+    E_COUPLE_ORDRE = "E_COUPLE_ORDRE"
+    E_TRIO = "E_TRIO"
+    E_TRIO_ORDRE = "E_TRIO_ORDRE"
+    E_SUPER_QUATRE = "E_SUPER_QUATRE"
+    E_DEUX_SUR_QUATRE = "E_DEUX_SUR_QUATRE"
+    E_MULTI = "E_MULTI"
+    E_TIERCE = "E_TIERCE"
+    E_QUARTE_PLUS = "E_QUARTE_PLUS"
+    E_QUINTE_PLUS = "E_QUINTE_PLUS"
+    E_MINI_MULTI = "E_MINI_MULTI"
+    E_PICK5 = "E_PICK5"
+    EB5 = "EB5"
