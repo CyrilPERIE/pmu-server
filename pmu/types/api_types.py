@@ -217,7 +217,6 @@ class Course(BaseModel):
     cagnottes: List[Cagnotte]
     categorieParticularite: str
     categorieStatut: str
-    commentaireApresCourse: Optional[TexteSource] = None
     conditionAge: Optional[str] = None
     conditionSexe: Optional[str] = None
     conditions: str

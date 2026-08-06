@@ -5,12 +5,15 @@ BASE_URL = "https://online.turfinfo.api.pmu.fr/rest/client/61/programme"
 MAX_RETRIES = 3
 MIN_DATE = "01012016"
 
-logger = logging.getLogger("pmu.client")
+logger = logging.getLogger(__name__)
 
-def fetch_pmu_api(url: str) -> dict:
+def fetch_pmu_api(url: str) -> dict | None:
     for _ in range(MAX_RETRIES):
-        logger.info(f"Fetching data from {url}")
-        print(f"{BASE_URL}/{url}")
+        logger.info(f"Fetching data from {BASE_URL}/{url}")
         response = get(f"{BASE_URL}/{url}")
-        return response
+        if response.status_code == 200:
+            return response.json()
+        else:
+            logger.error(f"Failed to fetch data from {url}: {response.status_code}")
+            return None
     raise Exception(f"Failed to fetch data from {url}")
