@@ -3,6 +3,7 @@ from models.programme import ProgrammeCreate
 from pmu.endpoints import get_programme
 from pmu.types.types import ProgrammeIdentifier
 from pmu.utils import date_to_programme_date
+from service.deps import get_session
 from service.programme import create_programme
 import logging
 
@@ -18,7 +19,8 @@ def scrap_programmes():
         for programme_date in programmes_disponibles:
             logger.info(f"scraping programme for {programme_date}")
             programme = get_programme(ProgrammeIdentifier(programme_date))
-            create_programme(ProgrammeCreate(id=programme_date, raw=programme))
+            with get_session() as session:
+                create_programme(ProgrammeCreate(id=programme_date, raw=programme), session)
     ## Stockage des dates des programmes disponibles
     logger.info("scrap_programmes finished !")
     return programmes

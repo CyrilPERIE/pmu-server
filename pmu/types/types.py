@@ -3,6 +3,11 @@ class CourseIdentifier:
         self.course_num = course_num
         self.reunion_num = reunion_num
         self.programme = programme
+    
+    def __init__(self, course_id: str):
+        self.course_num = int(course_id.split('/')[-1].split('C')[1])
+        self.reunion_num = int(course_id.split('/')[-2].split('R')[1])
+        self.programme = course_id.split('/')[0]
 
     def __str__(self) -> str:
         return f"{self.programme}/R{self.reunion_num}/C{self.course_num}"
