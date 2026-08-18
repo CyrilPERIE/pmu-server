@@ -1,34 +1,36 @@
-from api.routes import metrics
+from api.routes import metrics, scrap
 from fastapi import FastAPI
-from scraper.pipelines.scrap_programmes import scrap_programmes
+from scraper.pipelines.recuperation.scrap_programmes import scrap_programmes
+from utils.logger import setup_logging
 import uvicorn
-from scraper.orchestrator import every_midnight, every_five_minutes
+from scraper.orchestrator import every_day, every_five_minutes
 from fastapi_utilities import repeat_every, repeat_at
 
 
 app = FastAPI()
 
-app.include_router(metrics.router)
-
-@app.on_event('startup')
-@repeat_every(seconds=60 * 5)
-def every_five_minutes_task():
-    every_five_minutes()
-
-@app.on_event('startup')
-@repeat_at(cron='0 0 * * *')
-def every_midnight_task():
-    every_midnight()
-
+# app.include_router(metrics.router)
+# app.include_router(scrap.router)
 
 @app.on_event('startup')
 def startup_event():
-    every_midnight()
+    setup_logging()
+    every_day()
+
+@app.on_event('startup')
+@repeat_every(seconds=60 * 5)
+def every_five_minutes_event():
     every_five_minutes()
 
-@app.get("/")
-async def read_root():
-    return scrap_programmes()
+## Tous les jours à 4h
+@app.on_event('startup')
+@repeat_at(cron='0 4 * * *')
+def every_day_event():
+    every_day()
+
+# @app.get("/")
+# async def read_root():
+#     return {"message": "ok"}
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8080)

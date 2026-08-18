@@ -1,5 +1,9 @@
-from sqlmodel import Field, SQLModel
+from sqlmodel import Field, SQLModel, Relationship
 from sqlalchemy import Column, JSON
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from models.reunion import Reunion
 
 class ProgrammeBase(SQLModel):
     id: str = Field(max_length=14, primary_key=True)
@@ -10,4 +14,5 @@ class ProgrammeCreate(ProgrammeBase):
     pass
 
 class Programme(ProgrammeBase, table=True):
-    pass
+    
+    reunions: list["Reunion"] = Relationship(back_populates="programme")
