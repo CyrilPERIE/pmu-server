@@ -19,6 +19,7 @@ env
 docs_build
 site_build
 venv
+.venv
 docs.zip
 archive.zip
 .env
@@ -32,3 +33,4 @@ archive.zip
 .DS_Store
 
 .codspeed
+agent-audit

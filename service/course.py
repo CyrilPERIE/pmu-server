@@ -12,15 +12,6 @@ def create_course(course_create: CourseCreate, session: Session) -> Course:
     session.commit()
     return course
 
-def get_courses(session: Session, limit: int = None, offset: int = None) -> List[Course]:
-    courses = session.exec(select(Course.id).limit(limit).offset(offset)).all()
-    return [CourseIdentifier(course_id) for course_id in courses]
-
-def get_daily_courses(session: Session) -> List[CourseIdentifier]:
-    pmu_date = date_to_programme_date(datetime.date.today())
-    courses = session.exec(select(Course.id).where(Course.id.like(f"{pmu_date}/%"))).all()
-    return [CourseIdentifier(course_id) for course_id in courses]
-
 def get_active_courses_identifiers(session: Session) -> List[CourseIdentifier]:
     courses = session.exec(select(Course.id).where(Course.is_over == False)).all()
     return [CourseIdentifier(course_id) for course_id in courses]
@@ -32,12 +23,3 @@ def set_course_is_over(course_identifier: CourseIdentifier, session: Session) ->
     session.merge(course)
     session.commit()
     return course
-
-def count_courses(session: Session) -> int:
-    return session.exec(select(func.count(Course.id))).first()
-
-def count_active_courses(session: Session) -> int:
-    return session.exec(select(func.count(Course.id)).where(Course.is_over == False)).first()
-
-def count_inactive_courses(session: Session) -> int:
-    return session.exec(select(func.count(Course.id)).where(Course.is_over == True)).first()

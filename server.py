@@ -1,4 +1,4 @@
-from api.routes import metrics, scrap
+from api.routes import scrap
 from fastapi import FastAPI
 from scraper.pipelines.recuperation.scrap_programmes import scrap_programmes
 from utils.logger import setup_logging
@@ -9,7 +9,6 @@ from fastapi_utilities import repeat_every, repeat_at
 
 app = FastAPI()
 
-# app.include_router(metrics.router)
 # app.include_router(scrap.router)
 
 @app.on_event('startup')
@@ -28,9 +27,13 @@ def every_five_minutes_event():
 def every_day_event():
     every_day()
 
-# @app.get("/")
-# async def read_root():
-#     return {"message": "ok"}
+'''TODO: Création d'un middleware pour éviter le DDOS.
+'''
+'''TODO: Permettre le multi-threading pour la gestion asyncronne des requêtes et des pipelines.
+'''
+@app.get("/")
+async def read_root():
+    return {"message": "ok"}
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8080)

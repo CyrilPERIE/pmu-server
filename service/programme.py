@@ -17,12 +17,3 @@ def get_not_scraped_programme_dates(session: Session) -> List[str]:
 def set_programme_scraped(programme_identifier: ProgrammeIdentifier, session: Session) -> None:
     session.exec(update(Programme).where(Programme.id == str(programme_identifier)).values(is_scraped=True))
     session.commit()
-
-def get_programme_by_identifier(programme_identifier: ProgrammeIdentifier, session: Session) -> Programme:
-    return session.exec(select(Programme).where(Programme.id == str(programme_identifier))).first()
-
-def get_programmes(session: Session, limit: int = None, offset: int = None) -> List[Programme]:
-    return session.exec(select(Programme).limit(limit).offset(offset)).all()
-
-def get_programme_identifiers(session: Session) -> List[ProgrammeIdentifier]:
-    return [ProgrammeIdentifier(programme_id) for programme_id in session.exec(select(Programme.id)).all()]
