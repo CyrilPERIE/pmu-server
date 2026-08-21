@@ -12,7 +12,6 @@ app = FastAPI()
 @app.on_event('startup')
 def startup_event():
     setup_logging()
-    every_day()
 
 @app.on_event('startup')
 @repeat_every(seconds=60 * 5)
@@ -29,9 +28,16 @@ def every_day_event():
 '''
 '''TODO: Permettre le multi-threading pour la gestion asyncronne des requêtes et des pipelines.
 '''
-@app.get("/")
+@app.get("/health")
 async def read_root():
     return {"message": "ok"}
+
+# TODO: Enlever cette route une fois le pipeline de scraping fonctionnel.
+@app.get("/every-day")
+async def every_day_route():
+    every_day()
+    return {"message": "ok"}
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8080)
