@@ -17,7 +17,7 @@ config = context.config
 
 config.set_main_option(
     "sqlalchemy.url",
-    os.environ["DATABASE_POSTGRES_URL"],
+    os.environ["DATABASE_URL"],
 )
 
 # this is the Alembic Config object, which provides
