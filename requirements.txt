@@ -28,6 +28,7 @@ MarkupSafe==3.0.3
 mdurl==0.1.2
 numpy==2.5.1
 pandas==3.0.3
+psycopg2-binary==2.9.10
 pydantic==2.13.4
 pydantic-extra-types==2.11.1
 pydantic-settings==2.14.2
