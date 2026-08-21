@@ -3,13 +3,10 @@ from models.programme import ProgrammeCreate
 from pmu.types.types import ProgrammeIdentifier
 from sqlmodel import Session, select, update
 from models.programme import Programme
-
+from service.utils.crud import upsert
 
 def create_programme(programme_create: ProgrammeCreate, session: Session) -> Programme:
-    programme = Programme.model_validate(programme_create)
-    session.merge(programme)
-    session.commit()
-    return programme
+    return upsert(Programme, programme_create, session)
 
 def get_not_scraped_programme_dates(session: Session) -> List[str]:
     return session.exec(select(Programme.id).where(Programme.is_scraped == False)).all()

@@ -1,6 +1,4 @@
-from api.routes import scrap
 from fastapi import FastAPI
-from scraper.pipelines.recuperation.scrap_programmes import scrap_programmes
 from utils.logger import setup_logging
 import uvicorn
 from scraper.orchestrator import every_day, every_five_minutes

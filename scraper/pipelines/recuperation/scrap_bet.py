@@ -1,11 +1,10 @@
-import datetime
 from models.combinaison import CombinaisonCreate
 from models.rapport import RapportCreate
 from pmu.endpoints import get_course, get_combinaisons, get_rapports_definitifs
 from pmu.utils import is_arrivee_definitive, is_course_annulee
 from service.combinaison import create_combinaison
 from service.course import get_active_courses_identifiers, set_course_is_over
-from service.deps import get_session
+from service.utils.deps import get_session
 from service.rapport import create_rapport
 import logging
 

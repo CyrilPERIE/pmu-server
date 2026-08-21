@@ -1,6 +1,6 @@
 from models.participant import ParticipantCreate
 from pmu.endpoints import get_participants
-from service.deps import get_session
+from service.utils.deps import get_session
 from service.course import get_active_courses_identifiers
 from service.participant import create_participant
 import logging

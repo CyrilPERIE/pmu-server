@@ -1,9 +1,7 @@
 from models.reunion import Reunion, ReunionCreate
 from sqlmodel import Session
+from service.utils.crud import upsert
 
 
 def create_reunion(reunion_create: ReunionCreate, session: Session) -> None:
-    reunion = Reunion.model_validate(reunion_create)
-    session.merge(reunion)
-    session.commit()
-    return reunion
+    return upsert(Reunion, reunion_create, session)

@@ -2,6 +2,9 @@
 from typing import List, Optional
 from pydantic import BaseModel
 
+'''
+TODO: Tester les différents types de données.
+'''
 class Libelle(BaseModel):
     code: Optional[str] = None
     libelleCourt: str

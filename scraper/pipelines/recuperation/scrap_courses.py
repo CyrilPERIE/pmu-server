@@ -3,7 +3,7 @@ from models.reunion import ReunionCreate
 from pmu.endpoints import get_programme
 from pmu.types.types import ProgrammeIdentifier
 from service.course import create_course
-from service.deps import get_session
+from service.utils.deps import get_session
 from service.programme import get_not_scraped_programme_dates, set_programme_scraped
 from service.reunion import create_reunion
 import logging
