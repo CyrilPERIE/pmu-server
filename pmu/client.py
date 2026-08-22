@@ -88,4 +88,7 @@ def fetch_pmu_api(path: str) -> dict[str, Any] | None:
         if attempt < MAX_ATTEMPTS - 1:
             time.sleep(_backoff_delay(attempt, retry_after))
 
+    return None
+    '''TODO: Gestion de cette erreur là où c'est appelé avec un try/except
     raise PmuApiError(url=url, status_code=last_status, attempts=MAX_ATTEMPTS)
+    '''
