@@ -1,3 +1,4 @@
+from datetime import datetime
 from sqlmodel import Field, SQLModel, Relationship
 from sqlalchemy import Column, JSON
 from typing import TYPE_CHECKING
@@ -12,7 +13,8 @@ class CourseBase(SQLModel):
     id: str = Field(max_length=16, primary_key=True)
     raw: dict = Field(sa_column=Column(JSON))
     is_over: bool = Field(default=False)
-
+    created_at: datetime = Field(default_factory=datetime.now)
+    updated_at: datetime = Field(default_factory=datetime.now)
 class CourseCreate(CourseBase):
     reunion_id: str
 

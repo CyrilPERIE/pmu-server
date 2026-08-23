@@ -1,3 +1,4 @@
+from datetime import datetime
 from sqlmodel import Field, SQLModel, Relationship
 from sqlalchemy import Column, JSON
 from typing import TYPE_CHECKING
@@ -9,6 +10,8 @@ if TYPE_CHECKING:
 class ReunionBase(SQLModel):
     id: str = Field(max_length=14, primary_key=True)
     raw: dict = Field(sa_column=Column(JSON))
+    created_at: datetime = Field(default_factory=datetime.now)
+    updated_at: datetime = Field(default_factory=datetime.now)
 
 class ReunionCreate(ReunionBase):
     programme_id: str
