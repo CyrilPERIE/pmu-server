@@ -1,6 +1,8 @@
 from scraper.pipelines.recuperation import scrap_bet, scrap_courses, scrap_participants, scrap_programmes
 import logging
 
+from service import metrics
+
 logger = logging.getLogger(__name__)
 
 def every_day() -> None:
@@ -12,3 +14,4 @@ def every_day() -> None:
 def every_five_minutes() -> None:
     logger.info("every_five_minutes")
     scrap_bet.scrap_bet()
+    metrics.update_metrics()

@@ -1,3 +1,4 @@
+from api.routes import metrics
 from fastapi import FastAPI
 from utils.logger import setup_logging
 import uvicorn
@@ -7,11 +8,13 @@ from fastapi_utilities import repeat_every, repeat_at
 
 app = FastAPI()
 
+app.include_router(metrics.router)
 # app.include_router(scrap.router)
 
 @app.on_event('startup')
 def startup_event():
     setup_logging()
+    every_day()
 
 @app.on_event('startup')
 @repeat_every(seconds=60 * 5)
@@ -30,12 +33,6 @@ def every_day_event():
 '''
 @app.get("/health")
 async def read_root():
-    return {"message": "ok"}
-
-# TODO: Enlever cette route une fois le pipeline de scraping fonctionnel.
-@app.get("/every-day")
-async def every_day_route():
-    every_day()
     return {"message": "ok"}
 
 
