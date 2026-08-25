@@ -4,10 +4,11 @@ from service.utils.deps import get_session
 from service.course import get_active_courses_identifiers
 from service.participant import create_participant
 import logging
+from scraper.pipelines.utils.pipeline_decorator import log_scraper
 
 logger = logging.getLogger(__name__)
 
-
+@log_scraper
 def scrap_participants() -> None:
     """
     Récupération des participants pour les courses actives.

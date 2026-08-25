@@ -7,10 +7,11 @@ from service.course import get_active_courses_identifiers, set_course_is_over
 from service.utils.deps import get_session
 from service.rapport import create_rapport
 import logging
+from scraper.pipelines.utils.pipeline_decorator import log_scraper
 
 logger = logging.getLogger(__name__)
 
-
+@log_scraper
 def scrap_bet() -> None:
     """
     Récupération des côtes, de l'argent misé pour les différentes courses actives recensées dans ma base de données.\n

@@ -1,16 +1,27 @@
 from models.metrics import Metrics
-from service import metrics
+from models.scraper_log import ScraperLog
+from scraper.pipelines.recuperation.update_metrics import update_metrics
+from service.database import get_database_size
+from service.metrics import get_metrics
+from service.scraper_log import get_scraper_logs
 from service.utils.deps import get_session
 from fastapi import APIRouter
 
 router = APIRouter(prefix="/metrics", tags=["metrics"])
 
 @router.get("/")
-def get_metrics() -> list[Metrics]:
+def metrics() -> dict[str, list[Metrics] | list[ScraperLog] | str]:
     with get_session() as session:
-        return metrics.get_metrics(session)
+        metrics = get_metrics(session)
+        scraper_logs = get_scraper_logs(session)
+        database_size = get_database_size(session)
+        return {
+            "metrics": metrics,
+            "scraper_logs": scraper_logs,
+            "database_size": database_size
+        }
 
 @router.get("/update")
-def update_metrics() -> None:
-    metrics.update_metrics()
+def update() -> None:
+    update_metrics()
     return {"message": "Metrics updated"}

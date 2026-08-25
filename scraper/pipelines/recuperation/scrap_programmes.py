@@ -6,10 +6,12 @@ from pmu.utils import date_to_programme_date
 from service.utils.deps import get_session
 from service.programme import create_programme
 import logging
+from scraper.pipelines.utils.pipeline_decorator import log_scraper
 
 logger = logging.getLogger(__name__)
 
 
+@log_scraper
 def scrap_programmes() -> None:
     """
     Récupération des programmes disponibles.

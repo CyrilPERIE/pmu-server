@@ -3,11 +3,12 @@ from pmu.types.types import ProgrammeIdentifier
 from pmu.constants import MIN_DATE
 from pmu.utils import date_to_programme_date
 from scraper.pipelines.recuperation.scrap_past_programmes import scrap_past_programmes
+from scraper.pipelines.utils.pipeline_decorator import log_scraper
 
 LOWEST_DATE = ProgrammeIdentifier(MIN_DATE)
 HIGHEST_DATE = ProgrammeIdentifier(date_to_programme_date(datetime.date.today()))
 
-
+@log_scraper
 def historize(start_date: ProgrammeIdentifier = LOWEST_DATE, end_date: ProgrammeIdentifier = HIGHEST_DATE) -> None:
     '''
     Démarre une collecte qui peut avoir des dates antérieures à aujourd'hui.

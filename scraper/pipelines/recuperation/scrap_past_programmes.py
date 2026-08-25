@@ -4,8 +4,11 @@ from pmu.types.types import ProgrammeIdentifier
 from service.utils.deps import get_session
 from service.programme import create_programme
 import logging
+from scraper.pipelines.utils.pipeline_decorator import log_scraper
+
 logger = logging.getLogger(__name__)
 
+@log_scraper
 def scrap_past_programmes(programme_identifier: ProgrammeIdentifier) -> None:
     logger.info("scrap_programmes")
     programme = get_programme(programme_identifier)

@@ -7,10 +7,11 @@ from service.utils.deps import get_session
 from service.programme import get_not_scraped_programme_dates, set_programme_scraped
 from service.reunion import create_reunion
 import logging
+from scraper.pipelines.utils.pipeline_decorator import log_scraper
 
 logger = logging.getLogger(__name__)
 
-
+@log_scraper
 def scrap_courses() -> None:
     '''
     Récupération des courses pour tous les programmes disponibles en base de données et qui sont flagés `is_scraped==False`.\n
