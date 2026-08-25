@@ -13,3 +13,6 @@ def update_metrics() -> None:
         update_count_mean_courses_by_programme(session)
         update_count_mean_reunions_by_programme(session)
         update_lowest_year_programme(session)
+        update_count_participants(session)
+        update_count_mean_participants_by_course(session)
+        update_count_combinaisons(session)

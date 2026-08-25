@@ -1,6 +1,8 @@
+from models.combinaison import Combinaison
 from models.course import Course
 from models.programme import Programme
 from models.reunion import Reunion
+from models.participant import Participant
 from service.utils.crud import upsert
 from sqlmodel import Session, select
 from sqlalchemy import func
@@ -11,6 +13,11 @@ def get_metrics(session: Session) -> list[Metrics]:
 
 def create_metric(metric: Metrics, session: Session) -> Metrics:
     return upsert(Metrics, metric, session)
+
+def update_count_combinaisons(session: Session) -> int:
+    count = session.exec(select(func.count(Combinaison.id))).one()
+    metric = Metrics(type=MetricType.COUNT, value=count, name="Nombre de combinaisons récupérées")
+    return create_metric(metric, session)
 
 def update_count_courses(session: Session) -> int:
     count = session.exec(select(func.count(Course.id))).one()
@@ -25,6 +32,11 @@ def update_count_courses_incoming(session: Session) -> int:
 def update_count_courses_over(session: Session) -> int:
     count = session.exec(select(func.count(Course.id)).where(Course.is_over == True)).one()
     metric = Metrics(type=MetricType.COUNT, value=count, name="Nombre de courses terminées")
+    return create_metric(metric, session)
+
+def update_count_participants(session: Session) -> int:
+    count = session.exec(select(func.count(Participant.id))).one()
+    metric = Metrics(type=MetricType.COUNT, value=count, name="Nombre de participants récupérés")
     return create_metric(metric, session)
 
 def update_count_programmes(session: Session) -> int:
@@ -51,6 +63,21 @@ def update_count_mean_courses_by_programme(session: Session) -> int:
         select(func.avg(courses_by_programme.c.course_count))
     ).one()
     metric = Metrics(type=MetricType.COUNT, value=count, name="Nombre moyen de courses par programme")
+    return create_metric(metric, session)
+
+def update_count_mean_participants_by_course(session: Session) -> int:
+    participants_by_course = (
+        select(
+            Course.id,
+            func.count(Participant.id).label("participant_count")
+        )
+        .join(Participant, Participant.course_id == Course.id)
+        .group_by(Course.id)
+    )
+    count = session.exec(
+        select(func.avg(participants_by_course.c.participant_count))
+    ).one()
+    metric = Metrics(type=MetricType.COUNT, value=count, name="Nombre moyen de participants par course")
     return create_metric(metric, session)
 
 def update_count_mean_reunions_by_programme(session: Session) -> int:
