@@ -16,4 +16,4 @@ def update_scraper_log(scraper_log: ScraperLog,session: Session) -> ScraperLog:
     return upsert(ScraperLog, scraper_log, session)
 
 def get_scraper_logs(session: Session, limit: int = 15, offset: int = 0) -> list[ScraperLog]:
-    return session.exec(select(ScraperLog).limit(limit).offset(offset)).all()
+    return session.exec(select(ScraperLog).order_by(ScraperLog.created_at.desc()).limit(limit).offset(offset)).all()
