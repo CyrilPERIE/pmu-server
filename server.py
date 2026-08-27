@@ -1,5 +1,6 @@
 import sys
 from api.routes import metrics
+from api.routes import scrap
 from fastapi import FastAPI
 from utils.logger import setup_logging
 import uvicorn
@@ -11,7 +12,7 @@ pass_scraper = False
 app = FastAPI()
 
 app.include_router(metrics.router)
-# app.include_router(scrap.router)
+app.include_router(scrap.router)
 
 @app.on_event('startup')
 def startup_event():
