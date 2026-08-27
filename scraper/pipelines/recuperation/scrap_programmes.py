@@ -27,6 +27,8 @@ def scrap_programmes() -> None:
         for programme_date in programmes_disponibles:
             logger.info(f"scraping programme for {programme_date}")
             programme = get_programme(ProgrammeIdentifier(programme_date))
+            _programme = programme.copy()
+            del _programme["programme"]["reunions"]
             with get_session() as session:
-                create_programme(ProgrammeCreate(id=programme_date, raw=programme), session)
+                create_programme(ProgrammeCreate(id=programme_date, raw=_programme), session)
     logger.info("scrap_programmes finished !")

@@ -32,11 +32,13 @@ def scrap_courses() -> None:
         if reunions:
             logger.info(f"scraping {len(reunions)} reunions for {programme_date}")
         for reunion in reunions:
+            _reunion = reunion.copy()
+            del _reunion["courses"]
             logger.info(f"scraping reunion {reunion['numOfficiel']} for {programme_date}")
-            reunion_number = reunion['numOfficiel']
+            reunion_number = _reunion['numOfficiel']
             reunion_id = f"{programme_date}/R{reunion_number}"
             with get_session() as session:
-                create_reunion(ReunionCreate(id=reunion_id, raw=reunion, programme_id=programme_date), session)
+                create_reunion(ReunionCreate(id=reunion_id, raw=_reunion, programme_id=programme_date), session)
             courses = reunion['courses']
             logger.info(f"scraping {len(courses)} courses for {programme_date}")
 
