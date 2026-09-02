@@ -1,2 +1,3 @@
 [deploy]
+pre-deploy-command = "sh -c \"alembic upgrade head || (echo 'Alembic upgrade failed with exit code: '$?; exit 1)\""
 start-command = "uvicorn server:app --host 0.0.0.0 --port $PORT"
