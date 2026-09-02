@@ -5,7 +5,6 @@ from fastapi import FastAPI
 from utils.logger import setup_logging
 import uvicorn
 from scraper.orchestrator import every_day, every_five_minutes
-from fastapi_utilities import repeat_every, repeat_at
 
 pass_scraper = False
 
@@ -21,14 +20,12 @@ def startup_event():
         every_day()
 
 @app.on_event('startup')
-@repeat_every(seconds=60 * 5)
 def every_five_minutes_event():
     if not pass_scraper:
         every_five_minutes()
 
 ## Tous les jours à 4h
 @app.on_event('startup')
-@repeat_at(cron='0 4 * * *')
 def every_day_event():
     if not pass_scraper:
         every_day()
