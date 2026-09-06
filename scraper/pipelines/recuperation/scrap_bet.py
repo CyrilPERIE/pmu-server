@@ -28,22 +28,28 @@ def scrap_bet() -> None:
         -- Combinaisons: Côtes par pari, mises en jeu
         -- Course: Récupération en l'état de la course
         '''
-        combinaisons = get_combinaisons(active_course)
         course = get_course(active_course)
         '''
         Stockage de toutes les combinaisons dans la base de données
         '''
-        if combinaisons is not None:
-            for combinaison in combinaisons["combinaisons"]:
-                with get_session() as session:
-                    create_combinaison(CombinaisonCreate(id=f"{str(active_course)}-{combinaison['updateTime']}", raw=combinaison, course_id=str(active_course)), session)
-            logger.info(f"scraping course {active_course}")
-            logger.info(f"course {active_course} is {'active' if is_arrivee_definitive else 'not active'}")
+        _is_arrivee_definitive = is_arrivee_definitive(course)
+        _is_course_annulee = is_course_annulee(course)
+        _is_course_in_past_days = active_course.is_in_past_days()
+        _is_course_active = not _is_arrivee_definitive and not _is_course_annulee and not _is_course_in_past_days
+
+        if _is_course_active:
+            combinaisons = get_combinaisons(active_course)
+            if combinaisons is not None:
+                for combinaison in combinaisons["combinaisons"]:
+                    with get_session() as session:
+                        create_combinaison(CombinaisonCreate(id=f"{str(active_course)}-{combinaison['updateTime']}", raw=combinaison, course_id=str(active_course)), session)
+                logger.info(f"scraping course {active_course}")
+                logger.info(f"course {active_course} is {'active' if is_arrivee_definitive else 'not active'}")
 
         '''
         Si la course n'est plus d'actualité alors on la passe en inactive dans la base de données et on récupère les rapports définitifs.
         '''
-        if is_arrivee_definitive(course) or is_course_annulee(course) or active_course.is_in_past_days():
+        if not _is_course_active:
             logger.info(f"setting course {active_course} to over")
             with get_session() as session:
                 course_over = set_course_is_over(active_course, session)

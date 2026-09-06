@@ -22,6 +22,8 @@ class ScraperLogBase(SQLModel):
             )
         )
     )
+    error_message: str | None = Field(default=None)
+    error_traceback: str | None = Field(default=None)
 
 class ScraperLogCreate(SQLModel):
     scraper: str
