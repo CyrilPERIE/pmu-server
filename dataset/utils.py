@@ -32,3 +32,9 @@ def load_sql(
     }
     with engine.connect() as connection:
         return pd.read_sql(text(query), connection, params=params)
+
+
+def load_query(query: str, **params: object) -> pd.DataFrame:
+    """Exécute une requête SQL libre, sans fenêtre de dates."""
+    with engine.connect() as connection:
+        return pd.read_sql(text(query), connection, params=params or None)
