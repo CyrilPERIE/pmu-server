@@ -17,7 +17,7 @@ def is_arrivee_definitive(course: Course) -> bool:
 def is_course_annulee(course: Course) -> bool:
     return "statut" in course.keys() and course["statut"] == "COURSE_ANNULEE"
 
-def programme_dates_between_dates(start_date: ProgrammeIdentifier, end_date: ProgrammeIdentifier) -> List[ProgrammeIdentifier]:
+def programme_dates_between_dates(start_date: "ProgrammeIdentifier", end_date: "ProgrammeIdentifier") -> "List[ProgrammeIdentifier]":    
     programmes = []
     current_date = start_date
     while current_date <= end_date:
