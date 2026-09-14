@@ -1,6 +1,7 @@
 from datetime import timedelta
 import datetime
 from pmu.utils import date_to_programme_date, programme_date_to_date
+
 class CourseIdentifier: 
     def __init__(self, course_num: int, reunion_num: int, programme: str):
         self.course_num = course_num

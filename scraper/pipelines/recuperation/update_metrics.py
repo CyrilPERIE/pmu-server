@@ -16,3 +16,4 @@ def update_metrics() -> None:
         update_count_participants(session)
         update_count_mean_participants_by_course(session)
         update_count_combinaisons(session)
+        update_scraper_metrics(session)

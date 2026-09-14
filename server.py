@@ -44,6 +44,6 @@ async def read_root():
 
 if __name__ == "__main__":
     args = sys.argv[1:]
-    if "--pass-scraper" in args:
+    if "dev" in args:
         pass_scraper = True
     uvicorn.run(app, host="0.0.0.0", port=8080)

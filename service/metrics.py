@@ -3,50 +3,54 @@ from models.course import Course
 from models.programme import Programme
 from models.reunion import Reunion
 from models.participant import Participant
+from models.scraper_log import ScraperLog, ScraperStatus
 from service.utils.crud import upsert
 from sqlmodel import Session, select
 from sqlalchemy import func
-from models.metrics import MetricType, Metrics
+from models.metrics import MetricCategory, MetricType, Metrics
 
 def get_metrics(session: Session) -> list[Metrics]:
     return session.exec(select(Metrics)).all()
+
+def get_metrics_by_category(session: Session, category: MetricCategory) -> list[Metrics]:
+    return session.exec(select(Metrics).where(Metrics.category == category)).all()
 
 def create_metric(metric: Metrics, session: Session) -> Metrics:
     return upsert(Metrics, metric, session)
 
 def update_count_combinaisons(session: Session) -> int:
     count = session.exec(select(func.count(Combinaison.id))).one()
-    metric = Metrics(type=MetricType.COUNT, value=count, name="Nombre de combinaisons récupérées")
+    metric = Metrics(type=MetricType.COUNT, value={"value": count}, name="Nombre de combinaisons récupérées", category=MetricCategory.RECUPERATION)
     return create_metric(metric, session)
 
 def update_count_courses(session: Session) -> int:
     count = session.exec(select(func.count(Course.id))).one()
-    metric = Metrics(type=MetricType.COUNT, value=count, name="Nombre de courses récupérées")
+    metric = Metrics(type=MetricType.COUNT, value={"value": count}, name="Nombre de courses récupérées", category=MetricCategory.RECUPERATION)
     return create_metric(metric, session)
 
 def update_count_courses_incoming(session: Session) -> int:
     count = session.exec(select(func.count(Course.id)).where(Course.is_over == False)).one()
-    metric = Metrics(type=MetricType.COUNT, value=count, name="Nombre de courses en cours de récupération")
+    metric = Metrics(type=MetricType.COUNT, value={"value": count}, name="Nombre de courses en cours de récupération", category=MetricCategory.RECUPERATION)
     return create_metric(metric, session)
 
 def update_count_courses_over(session: Session) -> int:
     count = session.exec(select(func.count(Course.id)).where(Course.is_over == True)).one()
-    metric = Metrics(type=MetricType.COUNT, value=count, name="Nombre de courses terminées")
+    metric = Metrics(type=MetricType.COUNT, value={"value": count}, name="Nombre de courses terminées", category=MetricCategory.RECUPERATION)
     return create_metric(metric, session)
 
 def update_count_participants(session: Session) -> int:
     count = session.exec(select(func.count(Participant.id))).one()
-    metric = Metrics(type=MetricType.COUNT, value=count, name="Nombre de participants récupérés")
+    metric = Metrics(type=MetricType.COUNT, value={"value": count}, name="Nombre de participants récupérés", category=MetricCategory.RECUPERATION)
     return create_metric(metric, session)
 
 def update_count_programmes(session: Session) -> int:
     count = session.exec(select(func.count(Programme.id))).one()
-    metric = Metrics(type=MetricType.COUNT, value=count, name="Nombre de programmes récupérés")
+    metric = Metrics(type=MetricType.COUNT, value={"value": count}, name="Nombre de programmes récupérés", category=MetricCategory.RECUPERATION)
     return create_metric(metric, session)
 
 def update_count_reunions(session: Session) -> int:
     count = session.exec(select(func.count(Reunion.id))).one()
-    metric = Metrics(type=MetricType.COUNT, value=count, name="Nombre de réunions récupérées")
+    metric = Metrics(type=MetricType.COUNT, value={"value": count}, name="Nombre de réunions récupérées", category=MetricCategory.RECUPERATION)
     return create_metric(metric, session)
 
 def update_count_mean_courses_by_programme(session: Session) -> int:
@@ -62,7 +66,7 @@ def update_count_mean_courses_by_programme(session: Session) -> int:
     count = session.exec(
         select(func.avg(courses_by_programme.c.course_count))
     ).one()
-    metric = Metrics(type=MetricType.COUNT, value=count, name="Nombre moyen de courses par programme")
+    metric = Metrics(type=MetricType.COUNT, value={"value": float(count) if count is not None else 0}, name="Nombre moyen de courses par programme", category=MetricCategory.RECUPERATION)
     return create_metric(metric, session)
 
 def update_count_mean_participants_by_course(session: Session) -> int:
@@ -77,7 +81,7 @@ def update_count_mean_participants_by_course(session: Session) -> int:
     count = session.exec(
         select(func.avg(participants_by_course.c.participant_count))
     ).one()
-    metric = Metrics(type=MetricType.COUNT, value=count, name="Nombre moyen de participants par course")
+    metric = Metrics(type=MetricType.COUNT, value={"value": float(count) if count is not None else 0}, name="Nombre moyen de participants par course", category=MetricCategory.RECUPERATION)
     return create_metric(metric, session)
 
 def update_count_mean_reunions_by_programme(session: Session) -> int:
@@ -93,12 +97,29 @@ def update_count_mean_reunions_by_programme(session: Session) -> int:
     count = session.exec(
         select(func.avg(reunions_by_programme.c.reunion_count))
     ).one()
-    metric = Metrics(type=MetricType.COUNT, value=count, name="Nombre moyen de réunions par programme")
+    metric = Metrics(type=MetricType.COUNT, value={"value": float(count) if count is not None else 0}, name="Nombre moyen de réunions par programme", category=MetricCategory.RECUPERATION)
     return create_metric(metric, session)
 
 def update_lowest_year_programme(session: Session) -> int:
     programmes_ids = session.exec(select(Programme.id)).all()
     programmes_years = [int(programmes_id[4:]) for programmes_id in programmes_ids]
     lowest = min(programmes_years)
-    metric = Metrics(type=MetricType.COUNT, value=lowest, name="Année la plus ancienne des programmes")
+    metric = Metrics(type=MetricType.COUNT, value={"value": lowest}, name="Année la plus ancienne des programmes", category=MetricCategory.RECUPERATION)
+    return create_metric(metric, session)
+
+def update_scraper_metrics(session: Session) -> int:
+    scraper_logs_unique = session.exec(select(ScraperLog.scraper).distinct()).all()
+    metrics_values = {}
+    for scraper in scraper_logs_unique:
+        count = session.exec(select(func.count(ScraperLog.id)).where(ScraperLog.scraper == scraper)).one()
+        successes = session.exec(select(func.count(ScraperLog.id)).where(ScraperLog.scraper == scraper, ScraperLog.status == ScraperStatus.COMPLETED)).one()
+        failures = session.exec(select(func.count(ScraperLog.id)).where(ScraperLog.scraper == scraper, ScraperLog.status == ScraperStatus.FAILED)).one()
+        pending = session.exec(select(func.count(ScraperLog.id)).where(ScraperLog.scraper == scraper, ScraperLog.status == ScraperStatus.RUNNING)).one()
+        metrics_values[scraper] = {
+            "count": count,
+            "successes": successes,
+            "failures": failures,
+            "pending": pending
+        }
+    metric = Metrics(type=MetricType.TABLE, value=metrics_values, name="Nombre de logs de scraper", category=MetricCategory.RECUPERATION)
     return create_metric(metric, session)
